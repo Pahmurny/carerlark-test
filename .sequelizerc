@@ -1,0 +1,15 @@
+const path = require('path');
+
+module.exports = {
+  "config": path.resolve('./src/db/config', 'index.js'),
+  "models-path": path.resolve('./src/db/models'),
+  "seeders-path": path.resolve('./src/db/seeds'),
+  "migrations-path": path.resolve('./src/db/migrations')
+};
+
+/*
+  Create new model:  sequelize model:create --name User --attributes email:string,password:string,refreshToken:string
+  Make migration:    sequelize db:migrate
+  Create new seeder: sequelize seed:create --name create-users
+  Make seeders:      sequelize db:seed:all
+*/
