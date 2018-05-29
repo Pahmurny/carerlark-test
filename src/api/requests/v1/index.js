@@ -1,20 +1,13 @@
 import { Router } from 'express';
-import { getFeedbackById, patchFeedbackById } from './controller';
+import { getRequestFeedbacks, createRequestFeedback } from './controller';
 import { token } from '../../../services/passport';
 
 const router = new Router();
 
-/**
- * @api {get} /:id Get Feedback details by ID
-    TODO: add apidocs
- */
-router.get('/:id', token({ required: true }), getFeedbackById);
+
+router.get('/:id/feedbacks', token({ required: true }), getRequestFeedbacks);
 
 
-/**
- * @api {patch} /:id Get Feedback details by ID
-    TODO: add apidocs
- */
-router.patch('/:id', token({ required: true }), patchFeedbackById);
+router.post('/:id/feedback', token({ required: true }), createRequestFeedback);
 
 export default router;
