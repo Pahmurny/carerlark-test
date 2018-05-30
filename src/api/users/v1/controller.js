@@ -11,9 +11,6 @@ export const showMe = ({ user }, res, next) => {
     where: {
       id: user.id,
     },
-    attributes: {
-      exclude: ['password', 'created', 'updated'],
-    },
     include: [
       {
         model: db.Company,
@@ -43,9 +40,9 @@ export const create = ({ body: { name, password, email } }, res, next) => {
 };
 
 export const getFeedbacks = ({ user, params, query }, res, next) => {
-  if (parseInt(params.id, 10) !== user.id) {
-    return next(generateError('You can\'t get feedbacks for this user', 403));
-  }
+  // if (parseInt(params.id, 10) !== user.id) {
+  //   return next(generateError('You can\'t get feedbacks for this user', 403));
+  // }
   const { limit, offset } = getPagination(query);
   const whereFilter = {
     [Op.and]: [
@@ -80,7 +77,14 @@ export const getFeedbacks = ({ user, params, query }, res, next) => {
 };
 
 export const getDetails = ({ params }, res, next) => {
-  return db.User.findById(parseInt(params.id, 10) || 0)
+  return db.User.findById(parseInt(params.id, 10) || 0, {
+    include: [
+      {
+        model: db.Company,
+        as: 'company',
+      },
+    ],
+  })
     .then((userData) => {
       if (!userData) {
         return res.status(404).json();
@@ -91,9 +95,9 @@ export const getDetails = ({ params }, res, next) => {
 };
 
 export const getRequests = ({ user, params, query }, res, next) => {
-  if (parseInt(params.id, 10) !== user.id) {
-    return next(generateError('You can\'t get requests for this user', 403));
-  }
+  // if (parseInt(params.id, 10) !== user.id) {
+  //   return next(generateError('You can\'t get requests for this user', 403));
+  // }
   const { limit, offset } = getPagination(query);
   const whereFilter = {
     [Op.or]: [

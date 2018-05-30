@@ -8,9 +8,9 @@ const router = new Router();
 
 router.get('/me', token({ required: true }), showMe);
 
-router.get('/:id/feedbacks', token({ required: true }), getFeedbacks);
+router.get('/:id/feedbacks', token({ required: false }), getFeedbacks);
 
-router.get('/:id/requests', token({ required: true }), getRequests);
+router.get('/:id/requests', token({ required: false }), getRequests);
 
 router.post('/:id/request', token({ required: true }), createRequest);
 
