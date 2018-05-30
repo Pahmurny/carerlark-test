@@ -31,7 +31,7 @@ export const token = ({ required } = {}) => (req, res, next) =>
   })(req, res, next);
 
 passport.use('password', new BasicStrategy((name, password, done) => {
-  return db.User.findOne({ where: { name } }).then((user) => {
+  return db.User.scope('withPassword').findOne({ where: { name } }).then((user) => {
     if (!user) {
       done(true);
       return null;

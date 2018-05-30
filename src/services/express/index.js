@@ -33,7 +33,7 @@ export default (apiRoot, routes) => {
         .json({
           status: 'error',
           message: err.message,
-          err: err,
+          err,
         });
     });
   }

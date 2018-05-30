@@ -2,11 +2,15 @@ import db from '../../../db/models';
 import { errorPromise } from '../../../services/helper';
 
 export const getRequestFeedbacks = ({ user, params, query }, res, next) => {
+  const limit = Number.isNaN(parseInt(query.limit, 10)) ? 20 : parseInt(query.limit, 10); // TODO: add validation < 100
+  const offset = Number.isNaN(parseInt(query.offset, 10)) ? 0 : parseInt(query.offset, 10);
   const whereFilter = {
     request_id: params.id,
   };
   return db.Feedback.findAndCountAll({
     where: whereFilter,
+    limit: limit,
+    offset: offset,
   })
     .then((response) => {
       return res.status(200).json(response);

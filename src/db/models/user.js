@@ -18,12 +18,14 @@ export default (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING(128),
       requred: true,
-      unique: true,
+      unique: {
+        msg: 'User name is already taken!',
+      },
     },
     slack_id: {
       type: DataTypes.STRING(16),
     },
-    deleted: {
+    is_deleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
@@ -41,6 +43,11 @@ export default (sequelize, DataTypes) => {
     },
     email: {
       type: DataTypes.STRING(320),
+      validate: {
+        isEmail: {
+          msg: 'Email format is invalid!',
+        },
+      },
     },
     skype: {
       type: DataTypes.STRING(128),
@@ -87,6 +94,12 @@ export default (sequelize, DataTypes) => {
     timestamps: true,
     createdAt: 'created',
     updatedAt: 'updated',
+    defaultScope: {
+      attributes: { exclude: ['password'] },
+    },
+    scopes: {
+      withPassword: {},
+    },
   });
 
   User.associate = (models) => {

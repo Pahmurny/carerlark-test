@@ -2,7 +2,7 @@ import { Op } from 'sequelize';
 import { sign } from '../../../services/jwt';
 import db from '../../../db/models';
 import { generateError } from '../../../services/helper';
-import { getFeedbakType, stringToBoolean, getStartEndDates } from './helper';
+import { getFeedbakType, stringToBoolean, getStartEndDates, getPagination } from './helper';
 
 export const showMe = ({ user }, res, next) => {
   // const userInfo = user.view();
@@ -30,16 +30,14 @@ export const showMe = ({ user }, res, next) => {
 };
 
 export const create = ({ body: { name, password, email } }, res, next) => {
-  console.log('Creating user', name, password, email);
   let user;
   return db.User.create({ name, password, email })
     .then((userData) => {
-      console.log('User created!');
       user = userData;
       return sign(user.id);
     })
     .then((token) => {
-      return res.status(201).json({ token: token, user: user.view() });
+      return res.status(201).json({ token, user: user.view() });
     })
     .catch(error => next(error));
 };
@@ -48,8 +46,7 @@ export const getFeedbacks = ({ user, params, query }, res, next) => {
   if (parseInt(params.id, 10) !== user.id) {
     return next(generateError('You can\'t get feedbacks for this user', 403));
   }
-  const limit = Number.isNaN(parseInt(query.limit, 10)) ? 20 : parseInt(query.limit, 10); // TODO: add validation < 100
-  const offset = Number.isNaN(parseInt(query.offset, 10)) ? 0 : parseInt(query.offset, 10);
+  const { limit, offset } = getPagination(query);
   const whereFilter = {
     [Op.and]: [
       {
@@ -71,8 +68,8 @@ export const getFeedbacks = ({ user, params, query }, res, next) => {
   }
   return db.Feedback.findAndCountAll({
     where: whereFilter,
-    limit: limit,
-    offset: offset,
+    limit,
+    offset,
   })
     .then((result) => {
       return res.status(200).json(result);
@@ -82,16 +79,22 @@ export const getFeedbacks = ({ user, params, query }, res, next) => {
     });
 };
 
-export const getDetails = ({ user, params }, res, next) => {
-  res.status(200).json({ message: 'geting user details', params, query });
+export const getDetails = ({ params }, res, next) => {
+  return db.User.findById(parseInt(params.id, 10) || 0)
+    .then((userData) => {
+      if (!userData) {
+        return res.status(404).json();
+      }
+      return res.status(200).json(userData);
+    })
+    .catch(error => next(error));
 };
 
 export const getRequests = ({ user, params, query }, res, next) => {
   if (parseInt(params.id, 10) !== user.id) {
     return next(generateError('You can\'t get requests for this user', 403));
   }
-  const limit = Number.isNaN(parseInt(query.limit, 10)) ? 20 : parseInt(query.limit, 10); // TODO: add validation < 100
-  const offset = Number.isNaN(parseInt(query.offset, 10)) ? 0 : parseInt(query.offset, 10);
+  const { limit, offset } = getPagination(query);
   const whereFilter = {
     [Op.or]: [
       {
@@ -104,8 +107,8 @@ export const getRequests = ({ user, params, query }, res, next) => {
   };
   return db.FeedbackRequest.findAndCountAll({
     where: whereFilter,
-    limit: limit,
-    offset: offset,
+    limit,
+    offset,
   })
     .then((result) => {
       return res.status(200).json(result);
@@ -149,10 +152,45 @@ export const createRequest = ({ user, params, body }, res, next) => {
     });
 };
 
+export const getAllUsers = ({ query }, res, next) => {
+  const { limit, offset } = getPagination(query);
+  const whereFilter = {
+    [Op.and]: [],
+  };
+  if (parseInt(query.company_id, 10)) {
+    whereFilter[Op.and].push({
+      company_id: parseInt(query.company_id, 10),
+    });
+  }
+  if (query.is_deleted) {
+    whereFilter[Op.and].push({
+      is_deleted: stringToBoolean(query.is_deleted),
+    });
+  }
+  if (query.start || query.end) {
+    whereFilter[Op.and].push({
+      created: {
+        [Op.between]: getStartEndDates(query.start, query.end),
+      },
+    });
+  }
+  return db.User.findAndCountAll({
+    where: whereFilter,
+    limit,
+    offset,
+  })
+    .then((usersData) => {
+      return res.status(200).json(usersData);
+    })
+    .catch(error => next(error));
+};
+
 export default {
   showMe,
   create,
-  getFeedbacks,
-  createRequest,
   getDetails,
+  getFeedbacks,
+  getRequests,
+  createRequest,
+  getAllUsers,
 };

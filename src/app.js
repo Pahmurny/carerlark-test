@@ -3,6 +3,10 @@ import { env, port, ip, apiRoot } from './config';
 import express from './services/express';
 import api from './api';
 
+import db from './db/models';
+
+db.sequelize.sync();
+
 const app = express(apiRoot, api);
 const server = http.createServer(app);
 

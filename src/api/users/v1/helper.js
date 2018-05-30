@@ -74,8 +74,15 @@ export const getStartEndDates = (start, end) => {
   return [startFormated, endFormated];
 };
 
+export const getPagination = (query) => {
+  const limit = Number.isNaN(parseInt(query.limit, 10)) ? 20 : parseInt(query.limit, 10); // TODO: add validation < 100
+  const offset = Number.isNaN(parseInt(query.offset, 10)) ? 0 : parseInt(query.offset, 10);
+  return { limit, offset };
+};
+
 export default {
   getFeedbakType,
   stringToBoolean,
   getStartEndDates,
+  getPagination,
 };

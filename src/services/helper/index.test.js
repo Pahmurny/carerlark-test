@@ -1,6 +1,10 @@
-import { generateError, errorPromise } from '.';
+import { generateError } from '.';
 
-beforeEach(() => {
+beforeAll(() => {
+
+});
+
+afterAll(() => {
 
 });
 

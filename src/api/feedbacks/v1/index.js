@@ -5,16 +5,11 @@ import { token } from '../../../services/passport';
 const router = new Router();
 
 /**
- * @api {get} /:id Get Feedback details by ID
     TODO: add apidocs
  */
-router.get('/:id', token({ required: true }), getFeedbackById);
 
+router.get('/:id', token({ required: false }), getFeedbackById);
 
-/**
- * @api {patch} /:id Get Feedback details by ID
-    TODO: add apidocs
- */
-router.patch('/:id', token({ required: true }), patchFeedbackById);
+router.patch('/:id', token({ required: false }), patchFeedbackById);
 
 export default router;

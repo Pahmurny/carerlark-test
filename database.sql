@@ -5,7 +5,7 @@ CREATE TABLE "user" (
   company_id integer NULL,
   name varchar(128) NOT NULL UNIQUE,
   slack_id varchar(16) NULL,
-  deleted bool NULL DEFAULT false,
+  is_deleted bool NULL DEFAULT false,
   job_title varchar(256) NULL,
   first_name varchar(256) NULL,
   last_name varchar(256) NULL,
