@@ -61,7 +61,7 @@ export const stringToBoolean = (string) => {
 };
 
 export const getStartEndDates = (start, end) => {
-  // TODO: move to helper, add validations, check how it works with timezones etc
+  // TODO: add validations, check how it works with timezones etc
   let startFormated = new Date(1);
   let endFormated = new Date(2200, 1, 1);
 
@@ -74,15 +74,8 @@ export const getStartEndDates = (start, end) => {
   return [startFormated, endFormated];
 };
 
-export const getPagination = (query) => {
-  const limit = Number.isNaN(parseInt(query.limit, 10)) ? 20 : parseInt(query.limit, 10); // TODO: add validation < 100
-  const offset = Number.isNaN(parseInt(query.offset, 10)) ? 0 : parseInt(query.offset, 10);
-  return { limit, offset };
-};
-
 export default {
   getFeedbakType,
   stringToBoolean,
   getStartEndDates,
-  getPagination,
 };

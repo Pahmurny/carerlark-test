@@ -1,11 +1,9 @@
 import db from '../../../db/models';
+import { generateUpdateFileds } from './helper';
 
 export const getFeedbackById = ({ params, query }, res, next) => {
   // What shoud we do with anonymous feedbacks? remove giver?
   return db.Feedback.findById(parseInt(params.id, 10), {
-    attributes: {
-      exclude: ['password'],
-    },
     include: [
       {
         model: db.FeedbackRequest,
@@ -35,8 +33,18 @@ export const getFeedbackById = ({ params, query }, res, next) => {
     .catch(error => next(error));
 };
 
-export const patchFeedbackById = ({ user, params, query }, res, next) => {
-  res.status(200).json({ message: 'patching feedback by id', params, query });
+export const patchFeedbackById = async ({ params, body }, res, next) => {
+  try {
+    const Feedback = await db.Feedback.findById(parseInt(params.id, 10));
+    if (!Feedback) {
+      return res.status(404).json();
+    } else {
+      const updatedFeedback = await Feedback.update(generateUpdateFileds(body, ['comment', 'is_anonymous']));
+      return res.status(200).json(updatedFeedback);
+    }
+  } catch (error) {
+    return next(error);
+  }
 };
 
 export default {

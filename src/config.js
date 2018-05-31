@@ -17,7 +17,7 @@ if (process.env.NODE_ENV !== 'production') {
     sample: path.join(__dirname, '../.env.example'),
   });
 }
-/* MOVE DB SETTINGS TO ENV VARS */
+
 const config = {
   all: {
     env: process.env.NODE_ENV || 'development',

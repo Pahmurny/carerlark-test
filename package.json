@@ -12,6 +12,10 @@
   },
   "author": "",
   "license": "ISC",
+  "jest": {
+    "testEnvironment": "node",
+    "setupTestFrameworkScriptFile": "<rootDir>/src/test/setup.js"
+  },
   "dependencies": {
     "bcrypt": "^2.0.1",
     "bluebird": "^3.5.1",

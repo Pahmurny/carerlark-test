@@ -1,12 +1,10 @@
 import { Op } from 'sequelize';
 import { sign } from '../../../services/jwt';
 import db from '../../../db/models';
-import { generateError } from '../../../services/helper';
-import { getFeedbakType, stringToBoolean, getStartEndDates, getPagination } from './helper';
+import { generateError, getPagination } from '../../../services/helper';
+import { getFeedbakType, stringToBoolean, getStartEndDates } from './helper';
 
 export const showMe = ({ user }, res, next) => {
-  // const userInfo = user.view();
-  // if (userInfo.is_admin) userInfo = { ...userInfo, is_admin: undefined };
   return db.User.findOne({
     where: {
       id: user.id,
@@ -21,9 +19,7 @@ export const showMe = ({ user }, res, next) => {
     .then((response) => {
       return res.status(200).json(response);
     })
-    .catch((error) => {
-      next(error);
-    });
+    .catch(error => next(error));
 };
 
 export const create = ({ body: { name, password, email } }, res, next) => {
@@ -71,9 +67,7 @@ export const getFeedbacks = ({ user, params, query }, res, next) => {
     .then((result) => {
       return res.status(200).json(result);
     })
-    .catch((error) => {
-      next(error);
-    });
+    .catch(error => next(error));
 };
 
 export const getDetails = ({ params }, res, next) => {
@@ -117,9 +111,7 @@ export const getRequests = ({ user, params, query }, res, next) => {
     .then((result) => {
       return res.status(200).json(result);
     })
-    .catch((error) => {
-      next(error);
-    });
+    .catch(error => next(error));
 };
 
 export const createRequest = ({ user, params, body }, res, next) => {
@@ -151,9 +143,7 @@ export const createRequest = ({ user, params, body }, res, next) => {
     .then((response) => {
       res.status(200).json(response);
     })
-    .catch((error) => {
-      next(error);
-    });
+    .catch(error => next(error));
 };
 
 export const getAllUsers = ({ query }, res, next) => {

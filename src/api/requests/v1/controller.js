@@ -1,23 +1,21 @@
+import { Op } from 'sequelize';
 import db from '../../../db/models';
-import { errorPromise } from '../../../services/helper';
+import { errorPromise, getPagination } from '../../../services/helper';
 
-export const getRequestFeedbacks = ({ user, params, query }, res, next) => {
-  const limit = Number.isNaN(parseInt(query.limit, 10)) ? 20 : parseInt(query.limit, 10); // TODO: add validation < 100
-  const offset = Number.isNaN(parseInt(query.offset, 10)) ? 0 : parseInt(query.offset, 10);
+export const getRequestFeedbacks = ({ params, query }, res, next) => {
+  const { limit, offset } = getPagination(query);
   const whereFilter = {
     request_id: params.id,
   };
   return db.Feedback.findAndCountAll({
     where: whereFilter,
-    limit: limit,
-    offset: offset,
+    limit,
+    offset,
   })
     .then((response) => {
       return res.status(200).json(response);
     })
-    .catch((error) => {
-      next(error);
-    });
+    .catch(error => next(error));
 };
 
 export const createRequestFeedback = ({ user, params, body }, res, next) => {
@@ -38,14 +36,64 @@ export const createRequestFeedback = ({ user, params, body }, res, next) => {
       return db.Feedback.create(feedback);
     })
     .then((response) => {
-      res.status(200).json(response);
+      return res.status(200).json(response);
     })
-    .catch((error) => {
-      next(error);
-    });
+    .catch(error => next(error));
+};
+
+export const getPendingRequestGivers = ({ params }, res, next) => {
+  const whereFilter = {
+    request_id: params.id,
+    is_finished: false,
+  };
+  return db.RequestGiver.findAll({
+    where: whereFilter,
+  })
+    .then((response) => {
+      return res.status(200).json(response);
+    })
+    .catch(error => next(error));
+};
+
+export const getRequestDetails = ({ params }, res, next) => {
+  return db.FeedbackRequest.findById(parseInt(params.id, 10) || 0, {
+    include: [
+      {
+        model: db.User,
+        as: 'requester',
+      },
+      {
+        model: db.User,
+        as: 'person_about',
+      },
+    ],
+  })
+    .then((response) => {
+      return res.status(200).json(response);
+    })
+    .catch(error => next(error));
+};
+
+export const getRequestsList = ({ query }, res, next) => {
+  const { limit, offset } = getPagination(query);
+  const whereFilter = {
+    [Op.and]: [],
+  };
+  return db.FeedbackRequest.findAndCountAll({
+    where: whereFilter,
+    limit,
+    offset,
+  })
+    .then((response) => {
+      return res.status(200).json(response);
+    })
+    .catch(error => next(error));
 };
 
 export default {
   getRequestFeedbacks,
   createRequestFeedback,
+  getPendingRequestGivers,
+  getRequestDetails,
+  getRequestsList,
 };
