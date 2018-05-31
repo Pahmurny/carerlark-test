@@ -35,7 +35,7 @@ export const create = ({ body: { name, password, email } }, res, next) => {
     .catch(error => next(error));
 };
 
-export const getFeedbacks = ({ user, params, query }, res, next) => {
+export const getFeedbacks = ({ params, query }, res, next) => {
   // if (parseInt(params.id, 10) !== user.id) {
   //   return next(generateError('You can\'t get feedbacks for this user', 403));
   // }
@@ -88,7 +88,7 @@ export const getDetails = ({ params }, res, next) => {
     .catch(error => next(error));
 };
 
-export const getRequests = ({ user, params, query }, res, next) => {
+export const getRequests = ({ params, query }, res, next) => {
   // if (parseInt(params.id, 10) !== user.id) {
   //   return next(generateError('You can\'t get requests for this user', 403));
   // }

@@ -41,13 +41,16 @@ export const createRequestFeedback = ({ user, params, body }, res, next) => {
     .catch(error => next(error));
 };
 
-export const getPendingRequestGivers = ({ params }, res, next) => {
+export const getPendingRequestGivers = ({ params, query }, res, next) => {
+  const { limit, offset } = getPagination(query);
   const whereFilter = {
     request_id: params.id,
     is_finished: false,
   };
-  return db.RequestGiver.findAll({
+  return db.RequestGiver.findAndCountAll({
     where: whereFilter,
+    limit,
+    offset,
   })
     .then((response) => {
       return res.status(200).json(response);

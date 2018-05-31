@@ -28,14 +28,42 @@ export const generateTestData = () => {
       request1 = await db.FeedbackRequest.create({
         ...testData.request1,
         person_about: user1.dataValues.id,
-        givers: [user1.dataValues.id, user2.dataValues.id],
         requester_id: user2.dataValues.id,
+        request_givers: [
+          {
+            giver_id: user1.dataValues.id,
+            is_finished: false,
+          },
+          {
+            giver_id: user2.dataValues.id,
+            is_finished: false,
+          },
+        ],
+      }, {
+        include: {
+          model: db.RequestGiver,
+          as: 'request_givers',
+        },
       });
       request2 = await db.FeedbackRequest.create({
         ...testData.request2,
         person_about: user1.dataValues.id,
-        givers: [user1.dataValues.id, user2.dataValues.id],
         requester_id: user2.dataValues.id,
+        request_givers: [
+          {
+            giver_id: user1.dataValues.id,
+            is_finished: false,
+          },
+          {
+            giver_id: user2.dataValues.id,
+            is_finished: false,
+          },
+        ],
+      }, {
+        include: {
+          model: db.RequestGiver,
+          as: 'request_givers',
+        },
       });
       feedback1 = await db.Feedback.create({
         ...testData.feedback1,

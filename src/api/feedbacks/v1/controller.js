@@ -3,7 +3,7 @@ import { generateUpdateFileds } from './helper';
 
 export const getFeedbackById = ({ params, query }, res, next) => {
   // What shoud we do with anonymous feedbacks? remove giver?
-  return db.Feedback.findById(parseInt(params.id, 10), {
+  return db.Feedback.findById(parseInt(params.id, 10) || 0, {
     include: [
       {
         model: db.FeedbackRequest,
@@ -27,15 +27,18 @@ export const getFeedbackById = ({ params, query }, res, next) => {
       },
     ],
   })
-    .then((usersData) => {
-      return res.status(200).json(usersData);
+    .then((feedbacksData) => {
+      if (!feedbacksData) {
+        return res.status(404).json();
+      }
+      return res.status(200).json(feedbacksData);
     })
     .catch(error => next(error));
 };
 
 export const patchFeedbackById = async ({ params, body }, res, next) => {
   try {
-    const Feedback = await db.Feedback.findById(parseInt(params.id, 10));
+    const Feedback = await db.Feedback.findById(parseInt(params.id, 10) || 0);
     if (!Feedback) {
       return res.status(404).json();
     } else {

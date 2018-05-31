@@ -146,3 +146,23 @@ describe('GET api/v1/users/:id/feedbacks', () => {
     expect(body.rows[0].id).toBe(feedback2.dataValues.id);
   });
 });
+
+describe('POST api/v1/users/:id/request', () => {
+  it('should create feedback request for user', async () => {
+    const { status, body } = await request.post(`/${user1.id}/request`)
+      .send({
+        question: 'Test request question',
+        question_type: 'writein',
+        send_to_type: 'manager',
+        person_about: user2.id,
+        givers: [user1.id, user2.id],
+      })
+      .set('Authorization', `Bearer ${user1.token}`);
+    expect(status).toBe(200);
+    expect(body.question).toBe('Test request question');
+    const createdFeedbackRequest = await db.FeedbackRequest.findById(body.id);
+    expect(createdFeedbackRequest.question).toBe('Test request question');
+    expect(Array.isArray(body.request_givers)).toBe(true);
+    expect(body.request_givers.length).toBe(2);
+  });
+});
