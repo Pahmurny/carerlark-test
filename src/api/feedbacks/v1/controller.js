@@ -1,7 +1,7 @@
 import db from '../../../db/models';
 import { generateUpdateFileds } from './helper';
 
-export const getFeedbackById = ({ params, query }, res, next) => {
+export const getFeedbackById = ({ params }, res, next) => {
   // What shoud we do with anonymous feedbacks? remove giver?
   return db.Feedback.findById(parseInt(params.id, 10) || 0, {
     include: [

@@ -1,5 +1,5 @@
 {
-  "name": "server-template",
+  "name": "carerlark-api",
   "version": "1.0.0",
   "description": "",
   "main": "src",
@@ -23,9 +23,10 @@
     "compression": "^1.7.2",
     "cors": "^2.8.4",
     "debug": "^3.1.0",
+    "dotenv-safe": "^5.0.1",
     "express": "^4.16.3",
     "helmet": "^3.12.1",
-    "jsonwebtoken": "^8.2.1",
+    "jsonwebtoken": "^8.2.2",
     "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
@@ -39,13 +40,12 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-runtime": "^6.26.0",
-    "dotenv-safe": "^5.0.1",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.12.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.8.2",
-    "jest-cli": "^23.0.1",
+    "jest-cli": "^23.1.0",
     "sequelize-cli": "^4.0.0",
     "supertest": "^3.1.0"
   }

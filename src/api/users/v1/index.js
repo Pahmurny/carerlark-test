@@ -4,8 +4,6 @@ import { token } from '../../../services/passport';
 
 const router = new Router();
 
-/* TODO: apidocs */
-
 router.get('/me', token({ required: true }), showMe);
 
 router.get('/:id/feedbacks', token({ required: false }), getFeedbacks);

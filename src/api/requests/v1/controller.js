@@ -1,6 +1,6 @@
 import { Op } from 'sequelize';
 import db from '../../../db/models';
-import { errorPromise, getPagination } from '../../../services/helper';
+import { generateError, getPagination } from '../../../services/helper';
 
 export const getRequestFeedbacks = ({ params, query }, res, next) => {
   const { limit, offset } = getPagination(query);
@@ -18,7 +18,8 @@ export const getRequestFeedbacks = ({ params, query }, res, next) => {
     .catch(error => next(error));
 };
 
-export const createRequestFeedback = ({ user, params, body }, res, next) => {
+
+export const createRequestFeedback_old = ({ user, params, body }, res, next) => {
   return db.FeedbackRequest.findById(params.id)
     .then((feedbackRequestResponse) => {
       if (!feedbackRequestResponse) {
@@ -39,6 +40,29 @@ export const createRequestFeedback = ({ user, params, body }, res, next) => {
       return res.status(200).json(response);
     })
     .catch(error => next(error));
+};
+
+
+export const createRequestFeedback = async ({ user, params, body }, res, next) => {
+  try {
+    const feedbackRequestResponse = await db.FeedbackRequest.findById(parseInt(params.id, 10) || 0);
+    if (!feedbackRequestResponse) {
+      return res.status(404).json();
+    }
+    const { dataValues: feedbackRequest } = feedbackRequestResponse;
+    const feedback = {
+      comment: body.comment,
+      giver_id: user.id,
+      person_about_id: feedbackRequest.person_about_id,
+      request_id: feedbackRequest.id,
+      requester_id: feedbackRequest.requester_id,
+      question: feedbackRequest.question,
+    };
+    const feedbackResponse = await db.Feedback.create(feedback);
+    return res.status(200).json(feedbackResponse);
+  } catch (error) {
+    return next(error);
+  }
 };
 
 export const getPendingRequestGivers = ({ params, query }, res, next) => {
