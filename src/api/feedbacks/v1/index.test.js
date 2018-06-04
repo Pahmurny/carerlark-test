@@ -20,6 +20,7 @@ let feedback2;
 let feedback3;
 
 beforeAll(async () => {
+  jest.setTimeout(30000);
   await db.sequelize.drop();
   await db.sequelize.sync();
   const result = await generateTestData();

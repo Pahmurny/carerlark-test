@@ -146,6 +146,30 @@ export const createRequest = ({ user, params, body }, res, next) => {
     .catch(error => next(error));
 };
 
+export const getReveiws = ({ params, query }, res, next) => {
+  const { limit, offset } = getPagination(query);
+  const whereFilter = {
+    [Op.or]: [
+      {
+        reviewer_id: params.id,
+      },
+      {
+        person_about_id: params.id,
+      },
+    ],
+  };
+  return db.Review.findAndCountAll({
+    where: whereFilter,
+    limit,
+    offset,
+  })
+    .then((result) => {
+      return res.status(200).json(result);
+    })
+    .catch(error => next(error));
+};
+
+
 export const getAllUsers = ({ query }, res, next) => {
   const { limit, offset } = getPagination(query);
   const whereFilter = {
@@ -186,5 +210,6 @@ export default {
   getFeedbacks,
   getRequests,
   createRequest,
+  getReveiws,
   getAllUsers,
 };

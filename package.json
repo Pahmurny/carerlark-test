@@ -7,6 +7,7 @@
     "start": "node .",
     "test": "jest --forceExit --detectOpenHandles",
     "coverage": "npm test -- --coverage",
+    "swagger:edit": "swagger_swagger_fileName=swagger/swagger.yaml swagger project edit",
     "db:seed": "node_modules/.bin/babel-node node_modules/.bin/sequelize db:seed:all",
     "db:unseed": "node_modules/.bin/babel-node node_modules/.bin/sequelize db:seed:undo:all"
   },
